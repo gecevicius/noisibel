@@ -1,8 +1,12 @@
 package com.example.noisibel;
 
+import android.util.Log;
+
 import java.io.File;
+import java.math.BigInteger;
 import java.security.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 public class Recording {
 
@@ -10,40 +14,62 @@ public class Recording {
     private Date date;
     private double length;
 
-    private double[] dbs;
+    private List<Number> dbs;
     private double avg = 0;
+
+    public double getLength() {
+        return length;
+    }
+
+    public double getAvg() {
+        return avg;
+    }
+
+    public double getMin() {
+        return min;
+    }
+
+    public double getMax() {
+        return max;
+    }
+
     private double min = 0;
     private double max = 0;
 
-    public Recording(File file,double[] dbs){
-        this.file = file;
+    public Recording(String file){
+        this.file = new File(file);
+        String stringTs = this.file.getName().replaceAll("^recording?-?", "").replaceAll("\\.([A-Za-z0-9])*$","");
+        long intTs = Long.parseLong(stringTs,25);
+        Log.d("timestamp",String.valueOf(intTs));
+        date = new Date(intTs);
+    }
+
+    public void setDbs(List<Number> dbs){
         this.dbs = dbs;
+        for(int i = 0; i < dbs.size() ; i++){
+            double item = (double) dbs.get(i);
+            avg = avg + item;
 
-        String stringTimestamp = file.getName().substring(8);
-        date = new Date(Integer.parseInt(stringTimestamp) * 1000);
+            if(min < item)
+                min = item;
 
-        for(int i = 0; i < dbs.length ; i++){
-            avg = avg + dbs[i];
-
-            if(min < dbs[i])
-                min = dbs[i];
-
-            if (max > dbs[i])
-                max = dbs[i];
+            if (max > item)
+                max = item;
         }
-        avg = avg / dbs.length;
-
+        avg = avg / dbs.size();
     }
 
     public File getFile() {
         return file;
     }
 
-    public double[] getDbs() {
+    public List<Number> getDbs() {
         return dbs;
     }
 
     public Date getDate(){
        return date;
     }
+
+
 }

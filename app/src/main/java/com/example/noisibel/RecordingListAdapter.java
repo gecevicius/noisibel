@@ -16,25 +16,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecordingListAdapter extends RecyclerView.Adapter<RecordingListAdapter.ViewHolder>{
-    private List<File> mData;
+    private List<Recording> mData;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
     private Context context;
+
     private Button viewBtn;
+    private Button deleteBtn;
 
-    public RecordingListAdapter(Context context, List<File> data ){
+    public RecordingListAdapter(Context context){
         this.mInflater = LayoutInflater.from(context);
-        this.mData = data;
         this.context = context;
-        Log.d("file size",String.valueOf(data.size()));
     }
-
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.recording_row, parent, false);
         context = view.getContext();
         viewBtn = view.findViewById(R.id.view);
+        deleteBtn = view.findViewById(R.id.delete);
         return new ViewHolder(view);
     }
 
@@ -42,14 +42,21 @@ public class RecordingListAdapter extends RecyclerView.Adapter<RecordingListAdap
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        String title = mData.get(position).getName();
+        String title = ListOfRecordings.getRecording(position).getFile().getName();
         holder.myTextView.setText(title);
         viewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(context,RecordingView.class);
-                i.putExtra("recording",mData.get(position));
+                i.putExtra("recording",position);
                 context.startActivity(i);
+            }
+        });
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ListOfRecordings.delete(position);
+                notifyDataSetChanged();
             }
         });
     }
@@ -57,7 +64,7 @@ public class RecordingListAdapter extends RecyclerView.Adapter<RecordingListAdap
     // total number of rows
     @Override
     public int getItemCount() {
-        return mData.size();
+        return ListOfRecordings.size();
     }
 
 
@@ -77,15 +84,8 @@ public class RecordingListAdapter extends RecyclerView.Adapter<RecordingListAdap
         }
     }
 
-    // convenience method for getting data at click position
-    File getItem(int id) {
-        return mData.get(id);
-    }
 
-    // allows clicks events to be caught
-    void setClickListener(ItemClickListener itemClickListener) {
-        this.mClickListener = itemClickListener;
-    }
+
 
     // parent activity will implement this method to respond to click events
     public interface ItemClickListener {

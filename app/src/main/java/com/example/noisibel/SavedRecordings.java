@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.noisibel.Recording;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -23,16 +25,12 @@ public class SavedRecordings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.saved_recordings);
-        String path =  Environment.getExternalStorageDirectory() + "/noisibel_recordings";
-
-        File directory = new File(path);
-        List<File> files = Arrays.asList(directory.listFiles());
-
+        ListOfRecordings.setRecordings();
         recordingsView = (RecyclerView) findViewById(R.id.recordingsRecycler);
-         recyclerLayoutManager = new LinearLayoutManager(this);
+        recyclerLayoutManager = new LinearLayoutManager(this);
         recordingsView.setLayoutManager(recyclerLayoutManager);
-        recyclerAdapter = new RecordingListAdapter(this,files);
+        recyclerAdapter = new RecordingListAdapter(this);
         recordingsView.setAdapter(recyclerAdapter);
-
     }
+
 }

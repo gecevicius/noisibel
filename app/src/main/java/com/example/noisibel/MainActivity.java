@@ -15,6 +15,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private Button start;
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     static final private double EMA_FILTER = 0.6;
     private boolean recording;
+
     final Runnable updater = new Runnable(){
 
         public void run(){
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         };
     };
     final Handler mHandler = new Handler();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,8 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void decibelUpdate(){
         //get decibel level
-        double db = recorder.soundDb();
-
+        double db = recorder.soundDb(true);
         //update Graph
         fragmentGraph.addPoint(db);
 

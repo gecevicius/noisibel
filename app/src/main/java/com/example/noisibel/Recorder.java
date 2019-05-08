@@ -16,18 +16,22 @@ import com.example.noisibel.Recording;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Recorder {
-    Button start;
-    Button stop;
 
-    String outputFile;
+    private Button start;
+    private Button stop;
 
     MediaRecorder mRecorder;
     private static double mEMA = 0.0;
     static final private double EMA_FILTER = 0.6;
 
+
+    private List<Number> dbs = new ArrayList<>();
+    private String outputFile;
 
     public void startRecorder(){
 
@@ -49,10 +53,11 @@ public class Recorder {
             }
 
             //NEED TO CREATE A FOLDER HERE
-            outputFile = Environment.getExternalStorageDirectory() + "/noisibel_recordings/recording"+ time +".3gp";
+            outputFile = Environment.getExternalStorageDirectory() + "/noisibel_recordings/recording-"+ time +".3gp";
             Log.d("path",String.valueOf(outputFile));
             mRecorder.setOutputFile(outputFile);
 
+            File recordingFile = new File(outputFile);
             try
             {
                 mRecorder.prepare();
@@ -75,9 +80,10 @@ public class Recorder {
         }
     }
 
-
-
     public void stopRecorder() {
+        Recording recording = new Recording(outputFile);
+        recording.setDbs(dbs);
+        ListOfRecordings.add(recording);
         if (mRecorder != null) {
             mRecorder.stop();
             mRecorder.release();
@@ -92,8 +98,12 @@ public class Recorder {
             return 0;
     }
 
-    public double soundDb(){
-        return  20 * Math.log10((double)Math.abs(getAmplitudeEMA()));
+    public double soundDb(boolean capture){
+        double db = 20 * Math.log10((double)Math.abs(getAmplitudeEMA()));
+        if(capture){
+            dbs.add(db);
+        }
+        return  db;
     }
 
     public double getAmplitudeEMA() {

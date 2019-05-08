@@ -11,8 +11,8 @@ import java.io.File;
 
 public class RecordingView  extends AppCompatActivity {
 
-    private TextView date;
-    private File file;
+    private TextView date, name, length, avg, min, max,time;
+    private Recording recording;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,15 +21,27 @@ public class RecordingView  extends AppCompatActivity {
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if(extras == null) {
-                file= null;
+                recording= null;
             } else {
-                file = (File) extras.get("recording");
+                int index = (int) extras.get("recording");
+                recording = ListOfRecordings.getRecording(index);
             }
         } else {
-            file = (File) savedInstanceState.getSerializable("recording");
+            recording = (Recording) savedInstanceState.getSerializable("recording");
         }
+
+        time = findViewById(R.id.time);
         date = findViewById(R.id.date);
-        date.setText(file.getName());
+        avg = findViewById(R.id.avg);
+        min = findViewById(R.id.min);
+        max = findViewById(R.id.max);
+
+        date.setText(recording.getFile().getName());
+        time.setText(String.valueOf(recording.getDate().getTime()));
+        avg.setText(String.valueOf(recording.getAvg()));
+        min.setText(String.valueOf(recording.getMin()));
+        max.setText(String.valueOf(recording.getMax()));
+
     }
 
     private void displayDb(){
