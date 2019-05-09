@@ -13,8 +13,18 @@ import android.widget.Button;
 import com.example.noisibel.Recording;
 
 import java.io.File;
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.InvalidParameterSpecException;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 public class SavedRecordings extends AppCompatActivity {
 
@@ -25,7 +35,8 @@ public class SavedRecordings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.saved_recordings);
-        ListOfRecordings.setRecordings();
+        //ListOfRecordings.setRecordings();
+        ListOfRecordings.loadData();
         recordingsView = (RecyclerView) findViewById(R.id.recordingsRecycler);
         recyclerLayoutManager = new LinearLayoutManager(this);
         recordingsView.setLayoutManager(recyclerLayoutManager);

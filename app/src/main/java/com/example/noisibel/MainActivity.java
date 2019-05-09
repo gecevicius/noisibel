@@ -15,8 +15,17 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ImageView;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.InvalidParameterSpecException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -106,7 +115,25 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Log.d("Noise", "stop runner()");
-                        pause();
+                        try {
+                            pause();
+                        } catch (NoSuchPaddingException e) {
+                            e.printStackTrace();
+                        } catch (InvalidKeyException e) {
+                            e.printStackTrace();
+                        } catch (NoSuchAlgorithmException e) {
+                            e.printStackTrace();
+                        } catch (IllegalBlockSizeException e) {
+                            e.printStackTrace();
+                        } catch (InvalidKeySpecException e) {
+                            e.printStackTrace();
+                        } catch (BadPaddingException e) {
+                            e.printStackTrace();
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        } catch (InvalidParameterSpecException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
                 runner.start();
@@ -156,8 +183,7 @@ public class MainActivity extends AppCompatActivity {
         recorder.startRecorder();
     }
 
-    public void pause()
-    {
+    public void pause() throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, InvalidKeySpecException, BadPaddingException, UnsupportedEncodingException, InvalidParameterSpecException {
         recorder.stopRecorder();
         recording = false;
         mHandler.removeCallbacks(runner);

@@ -14,11 +14,24 @@ import android.widget.TextView;
 
 import com.example.noisibel.Recording;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.InvalidParameterSpecException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 
 public class Recorder {
 
@@ -34,7 +47,6 @@ public class Recorder {
     private String outputFile;
 
     public void startRecorder(){
-
         if (mRecorder == null)
         {
             mRecorder = new MediaRecorder();
@@ -57,7 +69,8 @@ public class Recorder {
             Log.d("path",String.valueOf(outputFile));
             mRecorder.setOutputFile(outputFile);
 
-            File recordingFile = new File(outputFile);
+            File file = new File(outputFile);
+
             try
             {
                 mRecorder.prepare();
@@ -80,15 +93,19 @@ public class Recorder {
         }
     }
 
-    public void stopRecorder() {
+    public void stopRecorder() throws NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, UnsupportedEncodingException, InvalidParameterSpecException, InvalidKeyException, InvalidKeySpecException {
+
         Recording recording = new Recording(outputFile);
         recording.setDbs(dbs);
+
+
         ListOfRecordings.add(recording);
         if (mRecorder != null) {
             mRecorder.stop();
             mRecorder.release();
             mRecorder = null;
         }
+
     }
 
     public double getAmplitude() {
@@ -111,4 +128,7 @@ public class Recorder {
         mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA;
         return mEMA;
     }
+
+    //TESTING
+
 }
